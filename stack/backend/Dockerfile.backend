@@ -1,0 +1,79 @@
+#--------------#
+#   PHP BASE   #
+#--------------#
+
+ARG BASE_IMAGE=php:8-fpm-alpine
+
+FROM $BASE_IMAGE as php-base
+
+ENV APP_DIR=/app
+
+RUN apk update \
+    && apk add --no-cache \
+       freetype libpng libjpeg-turbo jpegoptim pngquant \
+    && apk add --no-cache --virtual .build-dependencies \
+       $PHPIZE_DEPS freetype-dev libpng-dev libjpeg-turbo-dev \
+    && docker-php-ext-configure opcache \
+       --enable-opcache \
+    && docker-php-ext-configure gd \
+       --with-freetype=/usr/include/ \
+       --with-jpeg=/usr/include/ \
+    && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
+    && docker-php-ext-install opcache gd pdo_mysql \
+    && pecl install redis apcu \
+    && docker-php-ext-enable redis apcu \
+    && pecl clear-cache \
+    && apk del .build-dependencies \
+    && addgroup php \
+    && adduser -S --ingroup php php \
+    && mkdir $APP_DIR \
+    && chown php:php $APP_DIR \
+    && cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY stack/backend/php/zz-php.ini $PHP_INI_DIR/conf.d/
+
+WORKDIR $APP_DIR
+
+#-------------#
+#   PHP DEV   #
+#-------------#
+
+FROM php-base as php-dev
+
+ENV COMPOSER_CACHE_DIR=$APP_DIR/var/composer
+
+RUN apk update \
+    && apk add --no-cache git patch \
+    && apk add --no-cache --virtual .build-dependencies $PHPIZE_DEPS \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer --version \
+    && pecl clear-cache \
+    && apk del .build-dependencies \
+    && mkdir -p $COMPOSER_CACHE_DIR \
+    && chown php:php $COMPOSER_CACHE_DIR \
+    && cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+COPY stack/backend/php/zz-php-dev.ini $PHP_INI_DIR/conf.d/
+
+USER php
+
+#---------#
+#   APP   #
+#---------#
+
+## Prepare production code
+FROM php-dev as app-code
+
+COPY --chown=php:php . $APP_DIR
+
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --apcu-autoloader \
+    && rm -rf stack $COMPOSER_CACHE_DIR
+
+## Application image
+FROM php-base as app-prod
+
+COPY --from=app-code --chown=php:php $APP_DIR $APP_DIR
+
+USER php

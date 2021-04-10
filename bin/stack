@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Load environment variables
+source .env
+
+# Compose function
+run_compose() {
+  # Target stack
+  STACK="$1"
+  shift
+
+  # Run docker-compose
+  DOCKER_BUILDKIT=1 \
+  docker-compose \
+    --file stack/docker-compose."$STACK".yml \
+    --project-name "$APP_NAME-$STACK" \
+    --project-directory "$PWD" \
+    "$@"
+}
+
+# Check if tack is up
+is_up() {
+  if [ "" != "$(run_compose $1 ps -q)" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Exit if command is 'up' and stack is already up
+exit_if_up() {
+  if is_up dev; then
+    CURRENT="DEV"
+  elif is_up prod; then
+    CURRENT="PROD"
+  else
+    return 1
+  fi
+
+  printf "\n$CURRENT is up or was not shut down properly\n"
+    exit 1
+}
+
+if [ "up" == "$1" ]; then
+  exit_if_up
+fi
+
+# Determine target
+if [ '--prod' == "$BASH_ARGV" ]; then
+  TARGET='prod'
+  set -- ${@:1:$BASH_ARGC-1}
+elif [ '--dev' == "$BASH_ARGV" ]; then
+  TARGET='dev'
+  set -- ${@:1:$BASH_ARGC-1}
+elif is_up prod; then
+  TARGET='prod'
+else
+  TARGET='dev'
+fi
+
+# Execute command
+run_compose "$TARGET" "$@"

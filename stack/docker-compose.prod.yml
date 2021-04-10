@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  server:
+    image: ${APP_NAME}:server-prod
+    hostname: ${APP_NAME}-server
+    build:
+      context: .
+      dockerfile: stack/server/Dockerfile.server
+      target: server-prod
+    volumes:
+      - app-public:${DRUPAL_ROOT_DIR}/${DRUPAL_PUBLIC_DIR}:ro
+      #- ./stack/server/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
+
+  cms:
+    image: ${APP_NAME}:app-prod
+    hostname: ${APP_NAME}-app
+    build:
+      context: .
+      dockerfile: stack/app/Dockerfile.app
+      target: app-prod
+    env_file:
+      - .env
+    volumes:
+      - app-public:${DRUPAL_ROOT_DIR}/${DRUPAL_PUBLIC_DIR}
+      - app-private:${DRUPAL_PRIVATE_DIR}
+      #- ./stack/app/php/zz-php.ini:/usr/local/etc/php/conf.d/zz-php.ini
+
+  db:
+    image: mariadb:10
+    hostname: ${APP_NAME}-db
+    volumes:
+      - db-data:/var/lib/mysql
+      - db-dump:/docker-entrypoint-initdb.d
+    ports:
+      - ${DB_PORT}:3306
+    env_file:
+      - .env
+    environment:
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=root
+
+  data:
+    image: ${APP_DATA_IMAGE}
+    hostname: ${APP_NAME}-data
+    volumes:
+      - app-public:/app-data/public
+      - app-private:/app-data/private
+      - db-dump:/app-data/db-dump
+
+  redis:
+    image: redis:6-alpine
+    hostname: ${APP_NAME}-redis
+    command: redis-server --maxmemory ${REDIS_MAXMEMORY} --maxmemory-policy ${REDIS_MAXMEMORY_POLICY}
+
+  mailhog:
+    image: mailhog/mailhog
+    hostname: ${APP_NAME}-mailhog
+    ports:
+      - 8025:8025
+
+volumes:
+  app-public:
+    name: ${APP_NAME}-app-public
+  app-private:
+    name: ${APP_NAME}-app-private
+  db-data:
+    name: ${APP_NAME}-db-data
+  db-dump:
+    name: ${APP_NAME}-db-dump

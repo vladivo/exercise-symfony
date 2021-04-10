@@ -1,0 +1,10 @@
+ARG BASE_IMAGE=node:14-alpine3.10
+
+FROM $BASE_IMAGE as frontend-dev
+
+ENV APP_DIR=/app \
+    YARN_CACHE_FOLDER=/app/var/yarn
+
+RUN yarn global add @nrwl/schematics @angular/cli
+
+WORKDIR $APP_DIR

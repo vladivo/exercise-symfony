@@ -1,0 +1,44 @@
+#----------#
+#   BASE   #
+#----------#
+
+ARG BASE_IMAGE=nginx:1-alpine
+
+FROM $BASE_IMAGE as server-base
+
+COPY stack/server/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+#------------#
+#   Assets   #
+#------------#
+
+# TODO: remove this step as soon dockerignore supports exception wildcards (https://github.com/moby/moby/issues/30018)
+
+FROM alpine as assets
+
+COPY web /web
+
+RUN apk update \
+    && apk add --no-cache rsync \
+    && mkdir /assets \
+    && rsync -arv --prune-empty-dirs \
+         --include="*/" \
+         --include="*.js" \
+         --include="*.css" \
+         --include="*.png" \
+         --include="*.jpg" \
+         --include="*.jpeg" \
+         --include="*.gif" \
+         --include="*.ico" \
+         --include="*.svg" \
+         --exclude="*" \
+       web/* /assets \
+    && cp web/index.php assets
+
+#----------#
+#   PROD   #
+#----------#
+
+FROM server-base as server-prod
+
+COPY --from=assets /assets /app/web

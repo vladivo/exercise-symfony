@@ -1,0 +1,27 @@
+# Exclude everything by default
+*
+
+# Include necessary stack files
+!stack/backend
+#!stack/settings/settings.prod.php
+
+# Include application code and config
+#!composer.*
+#!config
+#!vendor
+#!web
+
+# Ignore sites folder (will be recreated during composer install)
+#web/sites
+
+# Include file directories
+#!private/.htaccess
+#!var/tmp/.htaccess
+
+# Exclude everything except of .htaccess in public files directory
+#web/public
+#!web/public/.htaccess
+
+# Exclude tests
+#**/tests
+#**/Tests

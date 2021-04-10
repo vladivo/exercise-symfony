@@ -1,0 +1,3 @@
+#!/bin/bash
+
+bin/stack run --rm backend composer "$@" --dev

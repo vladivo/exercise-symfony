@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  http:
+    image: ${APP_NAME}:server-dev
+    hostname: ${APP_NAME}-server
+    build:
+      context: .
+      dockerfile: stack/server/Dockerfile.server
+      target: server-base
+    volumes:
+      - ./backend/public:/app/public
+      - ./stack/server/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
+
+  frontend:
+    image: ${APP_NAME}:frontend-dev
+    hostname: ${APP_NAME}-frontend
+    build:
+      context: .
+      dockerfile: stack/frontend/Dockerfile.frontend
+      target: frontend-dev
+    user: ${APP_HOST_UID}:${APP_HOST_GID}
+    command: yarn dev:ssr
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/app
+
+  backend:
+    image: ${APP_NAME}:backend-dev
+    hostname: ${APP_NAME}-backend
+    build:
+      context: .
+      dockerfile: stack/backend/Dockerfile.backend
+      target: php-dev
+    user: ${APP_HOST_UID}:${APP_HOST_GID}
+    environment:
+      - USER=php
+    env_file:
+      - .env
+    volumes:
+      - ${PWD}/backend:/app
+
+  db:
+    image: mariadb:${DB_SERVER_VERSION}
+    hostname: ${APP_NAME}-db
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - ${DB_PORT}:3306
+    env_file:
+      - .env
+    environment:
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=root
+
+#  redis:
+#    image: redis:6-alpine
+#    hostname: ${APP_NAME}-redis
+#    ports:
+#      - ${REDIS_PORT}:6379
+#    command: redis-server --maxmemory ${REDIS_MAXMEMORY} --maxmemory-policy ${REDIS_MAXMEMORY_POLICY}
+
+  mailhog:
+    image: mailhog/mailhog
+    hostname: ${APP_NAME}-mailhog
+    ports:
+      - 8025:8025
+
+volumes:
+  db-data:
+    name: ${APP_NAME}-db-data

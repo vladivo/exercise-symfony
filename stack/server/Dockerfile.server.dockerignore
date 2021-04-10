@@ -1,0 +1,15 @@
+# Exclude everything by default
+*
+
+# Include server config
+!stack/server/nginx
+
+# Include web directory
+!web
+
+# Exclude public storage
+web/public
+
+# Exclude tests
+**/tests
+**/Tests

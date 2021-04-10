@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ $1 == "-c" ]; then
+  COVERAGE="php -dxdebug.mode=coverage"
+
+bin/stack run --rm backend \
+   $COVERAGE vendor/bin/phpunit --debug --coverage-html /app/var/reports/phpunit "$@" --dev
