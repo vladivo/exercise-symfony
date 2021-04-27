@@ -1,0 +1,7 @@
+<div appEntityHost>
+  <div class="row mb-3" *ngIf="config.mode === entityViewMode.list">
+    <div class="col">
+      <a class="btn btn-success" [routerLink]="['/entity', config.type, 'add']">Add new</a>
+    </div>
+  </div>
+</div>

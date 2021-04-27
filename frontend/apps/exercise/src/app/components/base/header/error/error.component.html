@@ -1,0 +1,8 @@
+<ngb-alert *ngIf="(errors$ | async) as errors" type="danger" (closed)="resetErrors()">
+  <ul class="mb-0">
+    <li *ngFor="let error of errors">
+      <span>{{ error.title }}</span>
+      <span *ngIf="error.source"> ({{ error.source }})</span>
+    </li>
+  </ul>
+</ngb-alert>

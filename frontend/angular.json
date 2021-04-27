@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "exercise",
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "projects": {
+    "exercise": {
+      "projectType": "application",
+      "root": "apps/exercise",
+      "sourceRoot": "apps/exercise/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/exercise/browser",
+            "index": "apps/exercise/src/index.html",
+            "main": "apps/exercise/src/main.ts",
+            "polyfills": "apps/exercise/src/polyfills.ts",
+            "tsConfig": "apps/exercise/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/exercise/src/favicon.ico",
+              "apps/exercise/src/assets"
+            ],
+            "styles": ["apps/exercise/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/exercise/src/environments/environment.ts",
+                  "with": "apps/exercise/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "exercise:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "exercise:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "exercise:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/exercise/src/**/*.ts",
+              "apps/exercise/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/exercise"],
+          "options": {
+            "jestConfig": "apps/exercise/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/apps/exercise/server",
+            "main": "apps/exercise/server.ts",
+            "tsConfig": "apps/exercise/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "apps/exercise/src/environments/environment.ts",
+                  "with": "apps/exercise/src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "exercise:build",
+            "serverTarget": "exercise:server",
+            "port": 80,
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "exercise:build:production",
+              "serverTarget": "exercise:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "exercise:build:production",
+            "serverTarget": "exercise:server:production",
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {}
+          }
+        }
+      }
+    },
+    "exercise-e2e": {
+      "root": "apps/exercise-e2e",
+      "sourceRoot": "apps/exercise-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/exercise-e2e/cypress.json",
+            "tsConfig": "apps/exercise-e2e/tsconfig.e2e.json",
+            "devServerTarget": "exercise:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "exercise:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/exercise-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    }
+  }
+}

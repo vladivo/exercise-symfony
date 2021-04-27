@@ -1,0 +1,6 @@
+<div ngbDropdown class="nav-item dropdown">
+  <a ngbDropdownToggle class="nav-link dropdown-toggle" [id]="title">{{ title }}</a>
+  <div ngbDropdownMenu class="dropdown-menu" [attr.aria-labelledby]="title">
+      <a ngbDropdownItem class="dropdown-item" *ngFor="let item of nav" [routerLink]="item.path">{{ item.title }}</a>
+  </div>
+</div>

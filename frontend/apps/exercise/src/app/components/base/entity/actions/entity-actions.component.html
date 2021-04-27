@@ -1,0 +1,4 @@
+<a class="btn btn-primary mr-2" *ngIf="view" [routerLink]="['/entity', entity.type, entity.id]">view</a>
+<a class="btn btn-warning mr-2" *ngIf="edit" [routerLink]="['/entity', entity.type, entity.id, 'edit']">edit</a>
+<a class="btn btn-danger" *ngIf="delete" [routerLink]="['/entity', entity.type, entity.id, 'delete']">delete</a>
+

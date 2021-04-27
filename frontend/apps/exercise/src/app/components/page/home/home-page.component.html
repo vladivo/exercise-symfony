@@ -1,0 +1,12 @@
+<ng-container *ngIf="profile">
+  <h1>Hello {{ profile.username }}!</h1>
+  <app-user-profile></app-user-profile>
+</ng-container>
+<ng-container *ngIf="hasError">
+  <h1>Could not fetch user profile</h1>
+  <div class="h3">Try to run</div>
+  <div class="h3 text-primary">bin/console application:install</div>
+  <div class="h3">in your command line interface</div>
+</ng-container>
+
+

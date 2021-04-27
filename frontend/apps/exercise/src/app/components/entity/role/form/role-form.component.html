@@ -1,0 +1,32 @@
+<app-entity-page-top [title]="title"></app-entity-page-top>
+
+<div class="row">
+  <div class="col-6">
+    <form #roleForm="ngForm" id="role-form">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" name="name" id="name" [(ngModel)]="entity.name">
+      </div>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" name="title" id="title" [(ngModel)]="entity.title">
+      </div>
+      <fieldset *ngIf="(permissionsList$ | async) as permissionsList">
+        <legend>Permissions</legend>
+        <app-checkbox-group
+          name="permissions"
+          id="permissions"
+          [source]="permissionsList"
+          [columns]="{ label: 'name', value: 'id' }"
+          [ngModel]="entity.permissions"
+        ></app-checkbox-group>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<app-entity-page-bottom
+  [entity]="entity"
+  [isForm]="true"
+  (save)="onSubmit(roleForm.form)"
+></app-entity-page-bottom>

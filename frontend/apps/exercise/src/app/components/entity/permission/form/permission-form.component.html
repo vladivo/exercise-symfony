@@ -1,0 +1,18 @@
+<app-entity-page-top [title]="title"></app-entity-page-top>
+
+<div class="row">
+  <div class="col-6">
+    <form #permissionForm="ngForm" id="permission-form">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name" [(ngModel)]="entity.name">
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-entity-page-bottom
+  [entity]="entity"
+  [isForm]="true"
+  (save)="onSubmit(permissionForm.form)"
+></app-entity-page-bottom>

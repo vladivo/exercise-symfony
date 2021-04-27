@@ -1,0 +1,16 @@
+<app-entity-page-top title="Permission {{ entity.id }}"></app-entity-page-top>
+
+<div class="row">
+  <div class="col-2 font-weight-bold">ID</div>
+  <div class="col">{{ entity.id }}</div>
+</div>
+<div class="row">
+  <div class="col-2 font-weight-bold">Name</div>
+  <div class="col">{{ entity.name }}</div>
+</div>
+<div class="row">
+  <div class="col-2 font-weight-bold">Internal</div>
+  <div class="col">{{ entity.internal ? 'yes' : 'no' }}</div>
+</div>
+
+<app-entity-page-bottom [entity]="entity" [isForm]="false"></app-entity-page-bottom>

@@ -1,0 +1,12 @@
+<div class="row mb-2">
+  <h1 class="col">Delete entity</h1>
+</div>
+<div class="row">
+  <h2 class="col">Are you sure?</h2>
+</div>
+<div class="row mt-3">
+  <div class="col">
+    <button class="btn btn-success mr-2" [disabled]="!entity" (click)="confirm()">Yes</button>
+    <button class="btn btn-danger" [disabled]="!entity" (click)="cancel()">No</button>
+  </div>
+</div>

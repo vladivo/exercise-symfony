@@ -1,0 +1,13 @@
+<div class="row mt-3">
+  <div class="col">
+    <app-entity-actions
+      *ngIf="entity.id !== 0"
+      [entity]="entity"
+      [edit]="!isForm"
+      [view]="isForm"
+    ></app-entity-actions>
+    <button class="btn btn-success" *ngIf="isForm" [class.ml-5]="entity.id !== 0" (click)="save.emit()">
+      Save
+    </button>
+  </div>
+</div>

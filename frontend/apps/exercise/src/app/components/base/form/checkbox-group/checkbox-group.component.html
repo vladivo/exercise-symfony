@@ -1,0 +1,9 @@
+<div class="form-check" *ngFor="let entry of source; index as i">
+  <input class="form-check-input"
+         type="checkbox"
+         id="{{ id }}-{{ i }}"
+         [checked]="isChecked(entry[columns.value])"
+         (change)="onCheckedChange($event, entry[columns.value])"
+  >
+  <label class="form-check-label" for="{{ id }}-{{ i }}">{{ entry[columns.label] }}</label>
+</div>

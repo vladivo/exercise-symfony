@@ -1,0 +1,24 @@
+<h3>Profile</h3>
+
+<ng-container *ngIf="(profile$ | async) as user">
+  <div class="row">
+    <div class="col-4 font-weight-bold">Name:</div>
+    <div class="col">{{ user.username }}</div>
+  </div>
+  <div class="row">
+    <div class="col-4 font-weight-bold">Email:</div>
+    <div class="col">{{ user.email }}</div>
+  </div>
+  <div class="row">
+    <div class="col-4 font-weight-bold">Roles:</div>
+    <div class="col">
+      <div *ngFor="let role of user.roles">{{ role }}</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4 font-weight-bold">Permissions:</div>
+    <div class="col">
+      <div *ngFor="let permission of user.permissions">{{ permission }}</div>
+    </div>
+  </div>
+</ng-container>

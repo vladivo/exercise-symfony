@@ -1,0 +1,27 @@
+<app-entity-page-top title="Role {{ entity.id }}"></app-entity-page-top>
+
+<div class="row">
+  <div class="col-2 font-weight-bold">ID</div>
+  <div class="col">{{ entity.id }}</div>
+</div>
+<div class="row">
+  <div class="col-2 font-weight-bold">Name</div>
+  <div class="col">{{ entity.name }}</div>
+</div>
+<div class="row">
+  <div class="col-2 font-weight-bold">Title</div>
+  <div class="col">{{ entity.title }}</div>
+</div>
+<div class="row">
+  <div class="col-2 font-weight-bold">Internal</div>
+  <div class="col">{{ entity.internal ? 'yes' : 'no' }}</div>
+</div>
+<div class="row" *ngIf="(permissionNames$ | async) as permissionNames">
+  <div class="col-2 font-weight-bold">Permissions</div>
+  <div class="col">
+    <div *ngFor="let name of permissionNames">{{ name }}</div>
+  </div>
+</div>
+
+<app-entity-page-bottom [entity]="entity" [isForm]="false"></app-entity-page-bottom>
+

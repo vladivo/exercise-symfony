@@ -1,0 +1,6 @@
+<div class="row mb-2 border-bottom">
+  <div class="col-1">{{ entity.id }}</div>
+  <div class="col">{{ entity.name }}</div>
+  <div class="col-2"><span *ngIf="entity.internal">internal</span></div>
+  <app-entity-actions class="col-3 d-flex justify-content-end" [entity]="entity"></app-entity-actions>
+</div>
