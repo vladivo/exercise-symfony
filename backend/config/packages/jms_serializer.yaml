@@ -2,6 +2,14 @@ jms_serializer:
     visitors:
         xml_serialization:
             format_output: '%kernel.debug%'
+
+        json_serialization:
+            options: [ 'JSON_PRETTY_PRINT', 'JSON_UNESCAPED_SLASHES' ]
+
+    object_constructors:
+        doctrine:
+            fallback_strategy: "exception"
+
 #    metadata:
 #        auto_detection: false
 #        directories:

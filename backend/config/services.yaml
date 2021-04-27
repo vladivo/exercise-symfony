@@ -17,7 +17,12 @@ services:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            - '../src/Entity/'
+            - '../src/Entity'
+            - '../src/EntityListener'
+            - '../src/Exception'
+            - '../src/Form'
+            - '../src/Model'
+            - '../src/ParamConverter'
             - '../src/Kernel.php'
             - '../src/Tests/'
 
@@ -29,3 +34,22 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\ParamConverter\:
+        resource: '../src/ParamConverter'
+        tags:
+            - { name: request.param_converter }
+
+    App\ConfigProvider\StaticConfigProvider:
+        arguments: ['%app%']
+
+    App\EntityListener\User\AccountListener:
+        tags:
+            -
+                name: doctrine.orm.entity_listener
+                event: prePersist
+                entity: App\Entity\User\Account
+            -
+                name: doctrine.orm.entity_listener
+                event: preUpdate
+                entity: App\Entity\User\Account

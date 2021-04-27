@@ -1,0 +1,10 @@
+parameters:
+    app:
+        site:
+            mail:
+                noreply: 'noreply@example.com'
+        mail:
+            security:
+                onetime:
+                    subject: 'One time login.'
+                    body: 'Here is your one time login link: [:link:]'

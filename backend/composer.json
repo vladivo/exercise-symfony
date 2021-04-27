@@ -1,6 +1,8 @@
 {
     "type": "project",
     "license": "proprietary",
+    "name": "vladivo/exercise-symfony",
+    "description": "",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {

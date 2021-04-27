@@ -1,0 +1,28 @@
+roles:
+  -
+    name: anonymous
+    title: Anonymous
+    permissions: []
+
+  - name: authenticated
+    title: Authenticated
+    permissions:
+      - read_app_entity_user_account
+      - read_app_entity_user_permission
+      - read_app_entity_user_role
+
+  - name: administrator
+    title: Administrator
+    permissions:
+      - create_app_entity_user_account
+      - create_app_entity_user_permission
+      - create_app_entity_user_role
+      - read_app_entity_user_account
+      - read_app_entity_user_permission
+      - read_app_entity_user_role
+      - update_app_entity_user_account
+      - update_app_entity_user_permission
+      - update_app_entity_user_role
+      - delete_app_entity_user_account
+      - delete_app_entity_user_permission
+      - delete_app_entity_user_role
